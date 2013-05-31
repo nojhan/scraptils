@@ -47,7 +47,7 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-def pdf2csv(pdf):
+def pdf2csv(pdf, **kwds):
     fp = open(pdf, 'rb')
     parser = PDFParser(fp)
     doc = PDFDocument()
@@ -62,7 +62,7 @@ def pdf2csv(pdf):
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
 
-    writer = UnicodeWriter(sys.stdout)
+    writer = UnicodeWriter(sys.stdout, **kwds)
     for pageno, page in enumerate(doc.get_pages()):
         interpreter.process_page(page)
         layout = device.get_result()
@@ -125,4 +125,14 @@ def get_region(pdf, page, x1,y1,x2,y2):
                      )
 
 if __name__=='__main__':
-    pdf2csv(sys.argv[1])
+    filename=sys.argv[1]
+    fmtargs = sys.argv[2:]
+    if fmtargs:
+        kwargs = {}
+        for arg in fmtargs:
+            key,val = arg.strip().split("=")
+            kwargs[key] = val
+        pdf2csv(filename, **kwargs)
+    else:
+        pdf2csv(filename)
+
