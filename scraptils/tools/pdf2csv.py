@@ -99,6 +99,9 @@ def pdf2csv(pdf):
     fp.close()
 
 def filterclose(lst):
+    if not lst:
+        return []
+
     tmp=[lst[0]]
     for elem in islice(lst, 1, None):
         if elem - 2 > tmp[-1]:
